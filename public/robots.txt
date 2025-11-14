@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Disallow private routes
+Disallow: /orders
+Disallow: /cart
+Disallow: /checkout
+Disallow: /profile
+Disallow: /admin
+
+Sitemap: https://www.sainamanpearls.com/sitemap.xml

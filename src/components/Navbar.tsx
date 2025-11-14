@@ -1,0 +1,225 @@
+import { ShoppingBag, Menu, X, User, LogOut, Package, LayoutDashboard, Plus, Folder, Star } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async'; // ✅ SEO helmet
+
+interface User {
+  name: string;
+  email: string;
+}
+
+interface NavbarProps {
+  cartCount: number;
+  onCartClick: () => void;
+  onAuthClick: () => void;
+  onContactClick: () => void;
+  onProductsClick: () => void;
+  onAdminAddProduct: () => void;
+  onAdminDashboardClick: () => void;
+  onOrdersClick: () => void;
+  onHomeClick: () => void;
+  onAdminAddCategory: () => void;
+  onAdminReviewsClick: () => void;
+  onCollectionsClick: () => void;
+  onAboutClick: () => void;
+  user: User | null;
+  onLogout: () => void;
+}
+
+export default function Navbar(props: NavbarProps) {
+  const {
+    cartCount,
+    onCartClick,
+    onAuthClick,
+    onHomeClick,
+    onAdminAddProduct,
+    onAdminDashboardClick,
+    onOrdersClick,
+    onAdminAddCategory,
+    onAdminReviewsClick,
+    user,
+    onLogout,
+  } = props;
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isAdmin = user?.email === 'sainamanpearls1@gmail.com' || user?.email === 'admin@sainamanpearls.com';
+
+  // ✅ SEO JSON-LD structured data for organization
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Sai Naman Pearls",
+    "url": "https://www.sainamanpearls.com/",
+    "logo": "https://www.sainamanpearls.com/logo.png",
+    "sameAs": [
+      "https://www.instagram.com/sainamanpearls",
+      "https://www.facebook.com/sainamanpearls",
+      "https://www.youtube.com/@sainamanpearls"
+    ]
+  };
+
+  // ✅ Navigation structured data (helps with internal linking)
+  const navSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      { "@type": "SiteNavigationElement", "position": 1, "name": "Home", "url": "/" },
+      { "@type": "SiteNavigationElement", "position": 2, "name": "Products", "url": "/products" },
+      { "@type": "SiteNavigationElement", "position": 3, "name": "Reviews", "url": "/reviews" },
+      { "@type": "SiteNavigationElement", "position": 4, "name": "Contact", "url": "/contact" },
+      { "@type": "SiteNavigationElement", "position": 5, "name": "About", "url": "/about" }
+    ]
+  };
+
+  return (
+    <>
+   
+      <Helmet>
+        <title>Sai Naman Pearls | Authentic Pearl Jewellery Store</title>
+        <meta
+          name="description"
+          content="Sai Naman Pearls offers authentic pearl jewellery including necklaces, earrings, and bangles handcrafted with precision and elegance."
+        />
+        <meta name="keywords" content="pearls, jewellery, Sai Naman Pearls, pearl necklace, bangles, earrings, hyderabad pearls" />
+        <meta property="og:title" content="Sai Naman Pearls | Premium Pearl Jewellery" />
+        <meta property="og:description" content="Discover authentic pearl jewellery collections at Sai Naman Pearls. Elegant, timeless, and handcrafted with love." />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Sai Naman Pearls" />
+        <script type="application/ld+json">{JSON.stringify(orgSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(navSchema)}</script>
+      </Helmet>
+
+      <nav
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          isScrolled ? 'bg-black/95 backdrop-blur-sm py-4' : 'bg-transparent py-6'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            
+            <button onClick={onHomeClick} className="flex items-center space-x-3">
+              <div className="text-base sm:text-lg md:text-2xl font-light tracking-widest text-white">
+                SAI NAMAN PEARLS
+              </div>
+            </button>
+
+           
+            <div className="hidden md:flex items-center space-x-12">
+              <Link to="/" className="text-zinc-400 hover:text-white transition-colors tracking-wide">HOME</Link>
+              <Link to="/products" className="text-zinc-400 hover:text-white transition-colors tracking-wide">PRODUCTS</Link>
+              <Link to="/reviews" className="text-zinc-400 hover:text-white transition-colors tracking-wide">REVIEWS</Link>
+              <Link to="/contact" className="text-zinc-400 hover:text-white transition-colors tracking-wide">CONTACT</Link>
+              <Link to="/about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">ABOUT</Link>
+            </div>
+
+            
+            <div className="flex items-center space-x-6">
+              
+              <button onClick={onCartClick} className="relative text-zinc-400 hover:text-white transition-colors">
+                <ShoppingBag className="w-6 h-6" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-white text-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              {user ? (
+                <div className="relative">
+                  <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="flex items-center space-x-2 text-zinc-400 hover:text-white transition-colors">
+                    <User className="w-6 h-6" />
+                    <span className="hidden lg:block text-sm tracking-wider">{user.name}</span>
+                  </button>
+
+                  {isUserMenuOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
+                      <div className="absolute right-0 mt-2 w-64 bg-zinc-950 border border-zinc-800 shadow-xl z-50">
+                        <div className="p-4 border-b border-zinc-800">
+                          <p className="text-white font-light tracking-wider">{user.name}</p>
+                          <p className="text-zinc-500 text-sm">{user.email}</p>
+                        </div>
+
+                        <div className="py-2">
+                          <button onClick={() => { onOrdersClick(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 text-left text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors flex items-center space-x-3">
+                            <Package className="w-4 h-4" />
+                            <span className="tracking-wider text-sm">MY ORDERS</span>
+                          </button>
+
+                          {isAdmin && (
+                            <>
+                              <div className="border-t border-zinc-800 my-2" />
+                              <div className="px-4 py-2 text-zinc-600 text-xs tracking-wider">ADMIN</div>
+                              <button onClick={() => { onAdminDashboardClick(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 flex items-center space-x-3 text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors">
+                                <LayoutDashboard className="w-4 h-4" /><span className="tracking-wider text-sm">ORDER MANAGEMENT</span>
+                              </button>
+                              <button onClick={() => { onAdminReviewsClick(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 flex items-center space-x-3 text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors">
+                                <Star className="w-4 h-4" /><span className="tracking-wider text-sm">REVIEW MANAGEMENT</span>
+                              </button>
+                              <button onClick={() => { onAdminAddProduct(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 flex items-center space-x-3 text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors">
+                                <Plus className="w-4 h-4" /><span className="tracking-wider text-sm">ADD PRODUCT</span>
+                              </button>
+                              <button onClick={() => { onAdminAddCategory(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 flex items-center space-x-3 text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors">
+                                <Folder className="w-4 h-4" /><span className="tracking-wider text-sm">ADD CATEGORY</span>
+                              </button>
+                            </>
+                          )}
+
+                          <div className="border-t border-zinc-800 my-2" />
+                          <button onClick={() => { onLogout(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 text-left text-red-400 hover:text-red-300 hover:bg-zinc-900 transition-colors flex items-center space-x-3">
+                            <LogOut className="w-4 h-4" />
+                            <span className="tracking-wider text-sm">LOGOUT</span>
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <button onClick={onAuthClick} className="text-zinc-400 hover:text-white transition-colors">
+                  <User className="w-6 h-6" />
+                </button>
+              )}
+
+         
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden text-zinc-400 hover:text-white transition-colors">
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+       
+        <div
+          className={`fixed inset-0 z-40 md:hidden transition-opacity duration-300 ${
+            isMenuOpen ? "opacity-100 pointer-events-auto bg-black/50 backdrop-blur-sm" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setIsMenuOpen(false)}
+        />
+
+        <div
+          className={`fixed top-0 left-0 h-full w-64 bg-zinc-950 border-r border-zinc-900 z-50 transform transition-transform duration-300 md:hidden ${
+            isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="px-6 py-8 space-y-6">
+            <Link to="/" onClick={() => setIsMenuOpen(false)} className="block text-zinc-300 hover:text-white tracking-wider text-sm">HOME</Link>
+            <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block text-zinc-300 hover:text-white tracking-wider text-sm">PRODUCTS</Link>
+            <Link to="/reviews" onClick={() => setIsMenuOpen(false)} className="block text-zinc-300 hover:text-white tracking-wider text-sm">REVIEWS</Link>
+            <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block text-zinc-300 hover:text-white tracking-wider text-sm">CONTACT</Link>
+            <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block text-zinc-300 hover:text-white tracking-wider text-sm">ABOUT</Link>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
+}

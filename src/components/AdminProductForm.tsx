@@ -1,0 +1,342 @@
+import { useState, useEffect } from 'react';
+import { X, Plus, Minus, Loader2 } from 'lucide-react';
+
+interface AdminProductFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5001';
+
+export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminProductFormProps) {
+  const [loading, setLoading] = useState(false);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [categories, setCategories] = useState<any[]>([]);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    discountedPrice: '', // ✅ added
+    category_id: '',
+    images: [''],
+    in_stock: true,
+    featured: false,
+  });
+
+  useEffect(() => {
+    if (isOpen) fetchCategories();
+  }, [isOpen]);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/categories`);
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(Array.isArray(data) ? data : []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch categories', err);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleArrayChange = (index: number, value: string, field: 'images') => {
+    const newArray = [...formData[field]];
+    newArray[index] = value;
+    setFormData({ ...formData, [field]: newArray });
+  };
+
+  const addArrayField = (field: 'images') => {
+    setFormData({ ...formData, [field]: [...formData[field], ''] });
+  };
+
+  const removeArrayField = (index: number, field: 'images') => {
+    const newArray = formData[field].filter((_, i) => i !== index);
+    setFormData({ ...formData, [field]: newArray });
+  };
+
+  const handleImageUpload = async (file: File, index: number) => {
+    try {
+      setUploadingIndex(index);
+      setError('');
+
+      const sigRes = await fetch(`${API_BASE}/api/get-signature`, { method: 'POST' });
+      const sigData = await sigRes.json();
+
+      const form = new FormData();
+      form.append('file', file);
+      form.append('api_key', sigData.apiKey);
+      form.append('timestamp', sigData.timestamp.toString());
+      form.append('signature', sigData.signature);
+
+      const cloudRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${sigData.cloudName}/upload`,
+        { method: 'POST', body: form }
+      );
+
+      const cloudData = await cloudRes.json();
+      handleArrayChange(index, cloudData.secure_url, 'images');
+    } catch (err) {
+      console.error('Image upload failed', err);
+      setError('Failed to upload image');
+    } finally {
+      setUploadingIndex(null);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Not authenticated');
+
+      const slug = formData.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      const productData = {
+        name: formData.name,
+        slug,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        discountedPrice:
+          formData.discountedPrice !== '' ? parseFloat(formData.discountedPrice) : undefined,
+        category_id: formData.category_id || null,
+        images: formData.images.filter((img) => img.trim() !== ''),
+        in_stock: formData.in_stock,
+        featured: formData.featured,
+      };
+
+      const res = await fetch(`${API_BASE}/api/admin/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(productData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to create product');
+
+      setSuccess('Product created successfully!');
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        discountedPrice: '', // ✅ reset
+        category_id: '',
+        images: [''],
+        in_stock: true,
+        featured: false,
+      });
+
+      setTimeout(() => {
+        onSuccess?.();
+        onClose();
+      }, 1500);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create product');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50" onClick={onClose} />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl max-h-[90vh] overflow-y-auto z-50">
+        <div className="bg-zinc-950 border border-zinc-800 p-8 m-4">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-light tracking-widest text-white">ADD PRODUCT</h2>
+            <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors">
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {error && <div className="bg-red-900/20 border border-red-900 text-red-400 px-4 py-3 mb-6 text-sm">{error}</div>}
+          {success && <div className="bg-green-900/20 border border-green-900 text-green-400 px-4 py-3 mb-6 text-sm">{success}</div>}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name */}
+            <div>
+              <label className="block text-zinc-400 text-sm mb-2 tracking-wider">PRODUCT NAME *</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
+                placeholder="Diamond Necklace"
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-zinc-400 text-sm mb-2 tracking-wider">DESCRIPTION</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={4}
+                className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors resize-none"
+                placeholder="Product description..."
+              />
+            </div>
+
+            {/* Price + Discount */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-zinc-400 text-sm mb-2 tracking-wider">PRICE * (INR)</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  required
+                  min="0"
+                  step="0.01"
+                  className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
+                  placeholder="299.99"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 text-sm mb-2 tracking-wider">DISCOUNTED PRICE</label>
+                <input
+                  type="number"
+                  name="discountedPrice"
+                  value={formData.discountedPrice}
+                  onChange={handleChange}
+                  min="0"
+                  step="0.01"
+                  className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
+                  placeholder="Optional discounted price"
+                />
+              </div>
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block text-zinc-400 text-sm mb-2 tracking-wider">CATEGORY</label>
+              <select
+                name="category_id"
+                value={formData.category_id}
+                onChange={handleChange}
+                className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
+              >
+                <option value="">Select Category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id || cat._id} value={cat.id || cat._id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Images array */}
+            <div>
+              <label className="block text-zinc-400 text-sm mb-2 tracking-wider">IMAGES</label>
+              {formData.images.map((image, index) => (
+                <div key={index} className="flex gap-2 mb-2 items-center">
+                  <input
+                    type="url"
+                    value={image}
+                    onChange={(e) => handleArrayChange(index, e.target.value, 'images')}
+                    className="flex-1 bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      e.target.files && handleImageUpload(e.target.files[0], index)
+                    }
+                    className="text-sm text-white"
+                  />
+                  {uploadingIndex === index ? (
+                    <Loader2 className="animate-spin text-white w-5 h-5" />
+                  ) : (
+                    image && <img src={image} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                  )}
+                  {formData.images.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeArrayField(index, 'images')}
+                      className="bg-red-900/20 text-red-400 px-4 py-3 border border-red-900 hover:bg-red-900/30 transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => addArrayField('images')}
+                className="flex items-center space-x-2 text-zinc-400 hover:text-white transition-colors text-sm"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Image</span>
+              </button>
+            </div>
+
+            {/* Checkboxes */}
+            <div className="flex gap-6">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="in_stock"
+                  checked={formData.in_stock}
+                  onChange={handleChange}
+                  className="w-5 h-5 bg-black border border-zinc-800 text-white focus:ring-0"
+                />
+                <span className="text-zinc-400 text-sm tracking-wider">IN STOCK</span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={formData.featured}
+                  onChange={handleChange}
+                  className="w-5 h-5 bg-black border border-zinc-800 text-white focus:ring-0"
+                />
+                <span className="text-zinc-400 text-sm tracking-wider">FEATURED</span>
+              </label>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading || uploadingIndex !== null}
+              className="w-full bg-white text-black py-4 tracking-widest hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'CREATING...' : 'CREATE PRODUCT'}
+            </button>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+}
