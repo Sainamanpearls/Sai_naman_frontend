@@ -29,7 +29,7 @@ export default function ProductGrid({ onAddToCart, onViewProduct, newProduct }: 
   const [showAll, setShowAll] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const API_URL = import.meta.env.API_BASE_URL || 'http://localhost:5001';
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
