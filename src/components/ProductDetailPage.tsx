@@ -36,7 +36,7 @@ export default function ProductDetailPage({
   const [shareMessage, setShareMessage] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState(0);
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const API_URL = import.meta.env.VITE_API_BASE_URL  || 'http://localhost:5001';
   useEffect(() => {
     fetchProduct();
     window.scrollTo(0, 0);

@@ -53,7 +53,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const API_URL = import.meta.env.VITE_API_BASE_URL  || 'http://localhost:5001';
 
   // Helper: safe date formatter to avoid "Invalid Date"
   const formatDate = (input: string | undefined | null) => {

@@ -26,7 +26,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('pending');
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string>('');
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 
   useEffect(() => {

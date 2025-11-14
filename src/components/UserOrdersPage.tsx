@@ -53,7 +53,7 @@ export default function UserOrdersPage({ onBack }: UserOrdersPageProps) {
   const [orderItems, setOrderItems] = useState<{ [key: string]: OrderItem[] }>({});
   const [error, setError] = useState<string | null>(null);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
   useEffect(() => {
     fetchOrders();

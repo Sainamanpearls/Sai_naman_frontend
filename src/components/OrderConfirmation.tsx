@@ -36,7 +36,7 @@ export default function OrderConfirmation({
   const [order, setOrder] = useState<Order | null>(null);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
   useEffect(() => {
     fetchOrderDetails();
   }, [orderId]);

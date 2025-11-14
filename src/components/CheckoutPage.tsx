@@ -32,7 +32,7 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
     country: 'India',
   });
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
   useEffect(() => {
     const script = document.createElement('script');
