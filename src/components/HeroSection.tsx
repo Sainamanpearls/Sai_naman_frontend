@@ -55,7 +55,7 @@ export default function HeroSection() {
 
    
         <link rel="preload" as="image" href="/hero/h1.webp" fetchPriority="high" />
-        {/* <link rel="preload" as="image" href="/logo2.png" fetchPriority="high" /> */}
+        <link rel="preload" as="image" href="/Logo2.png" fetchPriority="high" />
       </Helmet>
 
       <section className="relative h-screen overflow-hidden">
@@ -101,7 +101,7 @@ export default function HeroSection() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center text-center lg:text-left w-full">
             <div className="space-y-4 lg:space-y-6">
               <img
-                src="/logo2.png"
+                src="/Logo2.png"
                 alt="Brand Logo"
                 className="w-32 sm:w-48 lg:w-60 mx-auto lg:mx-0"
                 loading="eager"            
