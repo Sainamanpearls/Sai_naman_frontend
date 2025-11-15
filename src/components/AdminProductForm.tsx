@@ -144,7 +144,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
         name: '',
         description: '',
         price: '',
-        discountedPrice: '', // ✅ reset
+        discountedPrice: '', 
         category_id: '',
         images: [''],
         in_stock: true,
@@ -180,7 +180,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
           {success && <div className="bg-green-900/20 border border-green-900 text-green-400 px-4 py-3 mb-6 text-sm">{success}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name */}
+          
             <div>
               <label className="block text-zinc-400 text-sm mb-2 tracking-wider">PRODUCT NAME *</label>
               <input
@@ -194,7 +194,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
               />
             </div>
 
-            {/* Description */}
+        
             <div>
               <label className="block text-zinc-400 text-sm mb-2 tracking-wider">DESCRIPTION</label>
               <textarea
@@ -207,7 +207,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
               />
             </div>
 
-            {/* Price + Discount */}
+           
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-zinc-400 text-sm mb-2 tracking-wider">PRICE * (INR)</label>
@@ -239,7 +239,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
               </div>
             </div>
 
-            {/* Category */}
+           
             <div>
               <label className="block text-zinc-400 text-sm mb-2 tracking-wider">CATEGORY</label>
               <select
@@ -255,7 +255,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
               </select>
             </div>
 
-            {/* Images array */}
+           
             <div>
               <label className="block text-zinc-400 text-sm mb-2 tracking-wider">IMAGES</label>
               {formData.images.map((image, index) => (
@@ -301,7 +301,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
               </button>
             </div>
 
-            {/* Checkboxes */}
+           
             <div className="flex gap-6">
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
@@ -326,7 +326,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
               </label>
             </div>
 
-            {/* Submit */}
+          
             <button
               type="submit"
               disabled={loading || uploadingIndex !== null}

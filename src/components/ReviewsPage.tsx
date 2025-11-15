@@ -55,10 +55,10 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
 
   const API_URL = import.meta.env.VITE_API_BASE_URL  || 'http://localhost:5001';
 
-  // Helper: safe date formatter to avoid "Invalid Date"
+  
   const formatDate = (input: string | undefined | null) => {
     if (!input) return 'Date unavailable';
-    // Try numeric timestamp
+   
     if (!isNaN(Number(input))) {
       const d = new Date(Number(input));
       if (!isNaN(d.getTime())) {
@@ -74,7 +74,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
     return 'Date unavailable';
   };
 
-  // Fetch and merge reviews from backend and local
+ 
   const fetchAndMergeReviews = async () => {
     try {
       setLoading(true);
@@ -121,7 +121,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
     }
   };
 
-  // Fetch and merge social posts
+ 
   const fetchAndMergeSocialPosts = async () => {
     try {
       let backendPosts: SocialPost[] = [];
@@ -155,12 +155,12 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
     window.scrollTo(0, 0);
   }, [sortBy]);
 
-  // Pause all videos on tab change
+ 
   useEffect(() => {
     const pauseAllVideos = () => {
       document.querySelectorAll('video').forEach(v => {
         v.pause();
-        // @ts-ignore
+       
         v.currentTime = 0;
       });
     };
@@ -170,7 +170,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
     return () => clearTimeout(timer);
   }, [activeTab, socialPosts]);
 
-  // Submit review handler
+
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -387,7 +387,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
                     <textarea required value={formData.review_text} onChange={e=>setFormData({...formData,review_text:e.target.value})} rows={4} className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none resize-none"/>
                   </div>
 
-                  {/* Cloudinary Image Upload */}
+                
                   <div>
                     <label className="block text-zinc-400 mb-2">Add a Photo (optional)</label>
                     <input type="file" accept="image/*" onChange={async e=>{

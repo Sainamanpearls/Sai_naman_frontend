@@ -43,7 +43,7 @@ export default function AdminCategoryForm({ isOpen, onClose, onSuccess, initialD
       setError('');
       setSuccess('Uploading image...');
 
-      // Get Cloudinary signature
+      
       const sigRes = await fetch(`${API_BASE}/api/get-signature`, { method: 'POST' });
       const sigData = await sigRes.json();
 
@@ -53,7 +53,6 @@ export default function AdminCategoryForm({ isOpen, onClose, onSuccess, initialD
       form.append('timestamp', sigData.timestamp.toString());
       form.append('signature', sigData.signature);
 
-      // Upload to Cloudinary
       const cloudRes = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/upload`, {
         method: 'POST',
         body: form,
@@ -130,7 +129,7 @@ export default function AdminCategoryForm({ isOpen, onClose, onSuccess, initialD
       setFormData({ name: '', image_url: '' });
 
       setTimeout(() => {
-        onSuccess?.(); // Refresh categories in parent
+        onSuccess?.(); 
         onClose();
       }, 1000);
     } catch (err: any) {

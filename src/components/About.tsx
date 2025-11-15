@@ -16,7 +16,7 @@ export default function About({ onReviewsClick }: AboutProps) {
     { icon: Award, title: "Guarantee Certificate", description: "Every creation is backed by our commitment to excellence." },
   ];
 
-  // SEO meta content
+
   const title = "About Sai Naman Pearls | 31 Years of Legacy in Pearl Jewellery";
   const description =
     "Sai Naman Pearls is a renowned brand in India, crafting timeless pearl jewellery for over 31 years. Registered with KVIC & MSME, we blend heritage with innovation.";
@@ -24,7 +24,7 @@ export default function About({ onReviewsClick }: AboutProps) {
   const image = "https://sainamanpearls.com/assets/og-about.webp";
   const keywords = "Sai Naman Pearls, Pearl Jewellery, Hyderabad Pearls, Free Shipping, Legacy Jewellery Brand";
 
-  // JSON-LD structured data (Organization + Video)
+  
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [

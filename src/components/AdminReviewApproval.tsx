@@ -54,11 +54,11 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
         const data = await response.json();
         setReviews(data);
         
-        // If we're fetching all reviews, update the allReviews state
+       
         if (filter === 'all') {
           setAllReviews(data);
         } else if (allReviews.length === 0) {
-          // If allReviews is empty, fetch all reviews separately for counts
+       
           const allResponse = await fetch(`${API_URL}/api/admin/reviews?filter=all`, {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -94,7 +94,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
       });
 
       if (response.ok) {
-        // Update both reviews and allReviews
+      
         setReviews(prev => prev.map(review => 
           review._id === reviewId ? { ...review, is_approved: true } : review
         ));
@@ -141,7 +141,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
       });
 
       if (response.ok) {
-        // Update both reviews and allReviews
+        
         setReviews(prev => prev.map(review => 
           review._id === reviewId ? { ...review, is_approved: false } : review
         ));
@@ -206,7 +206,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
     }
   };
 
-  // Calculate counts from allReviews instead of filtered reviews
+  
   const totalCount = allReviews.length;
   const pendingCount = allReviews.filter(r => !r.is_approved).length;
   const approvedCount = allReviews.filter(r => r.is_approved).length;

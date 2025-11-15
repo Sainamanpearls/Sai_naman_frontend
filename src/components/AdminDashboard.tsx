@@ -163,7 +163,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
               </span>
             </div>
 
-            {/* Customer Details */}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-zinc-300">
@@ -194,7 +194,6 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
               </div>
             </div>
 
-            {/* Order Info */}
             <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
               <div className="flex items-center space-x-6">
                 <div className="flex items-center space-x-2 text-zinc-400 text-sm">
@@ -233,7 +232,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
         </div>
       </div>
 
-      {/* Order Items */}
+    
       {expandedOrder === order._id && orderItems[order._id] && (
         <div className="border-t border-zinc-800 bg-black">
           <div className="p-6">
@@ -278,7 +277,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   return (
     <div className="min-h-screen bg-black px-4 py-12 pt-32">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+      
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-5xl font-light tracking-widest text-white mb-2">

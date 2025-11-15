@@ -64,7 +64,7 @@ export default function CategorySection() {
         />
         <meta
           property="og:image"
-          content="https://yourdomain.com/og-images/categories.jpg"
+          content="https://sainamanpearls.com/categories.jpg"
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.href} />
@@ -81,7 +81,7 @@ export default function CategorySection() {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/og-images/categories.jpg"
+          content="https://sainamanpearls.com/categories.jpg"
         />
 
         {/* ✅ Canonical URL */}

@@ -51,7 +51,7 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Basic pincode validation for India (6 digits)
+  
   const isValidPincode = (pincode: string) => /^[1-9][0-9]{5}$/.test(pincode);
 
   const handleSubmit = async (e: React.FormEvent) => {
