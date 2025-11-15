@@ -20,13 +20,29 @@ export default function ReelSection() {
     }
   };
 
+  // ------- UPDATED INTERSECTION OBSERVER -------
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           const video = entry.target as HTMLVideoElement;
           const index = videoRefs.current.indexOf(video);
+
           if (entry.isIntersecting) {
+            // Lazy load source if empty
+            if (!video.src) {
+              const realSrc = video.dataset.src;
+              if (realSrc) video.src = realSrc;
+            }
+
+            // Pause all other videos
+            videoRefs.current.forEach((v, i) => {
+              if (i !== index && v) {
+                v.pause();
+                setIsPlaying(prev => ({ ...prev, [i]: false }));
+              }
+            });
+
             video.play().catch(() => {});
             setIsPlaying(prev => ({ ...prev, [index]: true }));
           } else {
@@ -35,13 +51,10 @@ export default function ReelSection() {
           }
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.8 } // must be ~80% visible → only 1 reel at a time
     );
 
-    videoRefs.current.forEach(video => {
-      if (video) observer.observe(video);
-    });
-
+    videoRefs.current.forEach(v => v && observer.observe(v));
     return () => observer.disconnect();
   }, []);
 
@@ -73,46 +86,14 @@ export default function ReelSection() {
         <title>Latest Reels | See Our Social Highlights</title>
         <meta
           name="description"
-          content="Watch the latest reels and video highlights from Instagram, YouTube, and TikTok. Stay connected with our trending social updates."
+          content="Watch the latest reels and video highlights from Instagram, YouTube, and TikTok."
         />
-        <meta name="keywords" content="reels, instagram, tiktok, youtube, social media, videos, highlights" />
-        <meta property="og:title" content="Latest Reels | Social Highlights" />
-        <meta
-          property="og:description"
-          content="Explore our latest social reels and trending videos across platforms like Instagram, YouTube, and TikTok."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/reels" />
-        <meta property="og:image" content="https://yourdomain.com/preview-image.jpg" />
-
-        {/* 📘 Breadcrumb Structured Data */}
-        <script type="application/ld+json">
-          {`
-          {
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://yourdomain.com/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Reels",
-                "item": "https://yourdomain.com/reels"
-              }
-            ]
-          }
-          `}
-        </script>
       </Helmet>
 
       <section className="relative bg-gradient-to-b from-black via-slate-900 to-black py-20 text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none z-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-light tracking-widest text-white">LATEST REELS</h2>
             <button
@@ -123,31 +104,33 @@ export default function ReelSection() {
             </button>
           </div>
 
-          <div className="flex overflow-x-auto gap-4 py-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900">
+          {/* Horizontal Reel Scroll - Updated width + snapping */}
+          <div className="flex overflow-x-auto gap-4 py-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900">
             {reels.map((reel, index) => (
               <div
                 key={reel._id}
-                className="flex-shrink-0 w-40 sm:w-56 md:w-64 bg-zinc-950 border border-zinc-800 rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 relative"
+                className="snap-center flex-shrink-0 w-[80vw] sm:w-56 md:w-64 bg-zinc-950 border border-zinc-800 rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 relative"
               >
                 <div
                   className="relative w-full cursor-pointer"
                   style={{ paddingTop: '177.78%' }}
                   onClick={() => togglePlay(index)}
                 >
+                  {/* ------- LAZY LOADED VIDEO ------- */}
                   <video
                     ref={el => (videoRefs.current[index] = el)}
-                    src={reel.media_url}
+                    data-src={reel.media_url}
                     muted={isMuted[index] ?? true}
                     loop
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     className="absolute top-0 left-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
                     onLoadedData={e => (e.currentTarget.style.opacity = '1')}
                   />
 
                   {!isPlaying[index] && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                      <Play className="w-10 h-10 text-white opacity-90" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <Play className="w-10 h-10 text-white opacity-80" />
                     </div>
                   )}
 
@@ -177,6 +160,7 @@ export default function ReelSection() {
                     <span>💬 {reel.comments}</span>
                   </div>
                 </div>
+
               </div>
             ))}
           </div>
