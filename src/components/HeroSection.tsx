@@ -136,7 +136,8 @@ export default function HeroSection() {
 
             
             <div className="hidden md:flex flex-col items-end gap-2 mt-6">
-              <div className="flex gap-3 overflow-x-auto scrollbar-none pb-2 justify-end">
+           <div className="flex gap-3 overflow-x-hidden pb-2 justify-end">
+
                 {jewelryItems.map((item, index) => (
                   <button
                     key={`thumb-${item.id}`}
