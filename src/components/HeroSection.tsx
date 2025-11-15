@@ -55,7 +55,7 @@ export default function HeroSection() {
 
    
         <link rel="preload" as="image" href="/hero/h1.webp" fetchPriority="high" />
-        <link rel="preload" as="image" href="/logo2.png" fetchPriority="high" />
+        {/* <link rel="preload" as="image" href="/logo2.png" fetchPriority="high" /> */}
       </Helmet>
 
       <section className="relative h-screen overflow-hidden">
