@@ -41,7 +41,7 @@ export default function CategorySection() {
 
   return (
     <>
-      {/* 🧠 SEO META TAGS */}
+     
       <Helmet>
         <title>
           Explore Pearl Jewelry Categories | Sai Naman Pearls - Free Delivery

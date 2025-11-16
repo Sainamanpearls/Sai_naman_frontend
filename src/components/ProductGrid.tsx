@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { ShoppingBag } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { localProducts } from '../data/products';
+
 
 interface Product {
   id: string;
@@ -65,12 +65,10 @@ export default function ProductGrid({ onAddToCart, onViewProduct, newProduct }: 
         }));
       }
 
-      const combined = [...backendProducts, ...localProducts];
-      const featured = combined.filter((p) => p.featured);
-      const deduped = Array.from(new Map(featured.map((p) => [p.slug, p])).values());
-      setProducts(deduped);
+        setProducts(backendProducts.filter((p) => p.featured));
+      setProducts(backendProducts);
     } catch (err) {
-      setProducts(localProducts.filter((p) => p.featured));
+      setProducts([]);
     } finally {
       setLoading(false);
     }

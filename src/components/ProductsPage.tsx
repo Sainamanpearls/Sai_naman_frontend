@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ShoppingBag, Trash2, X } from 'lucide-react';
-import { localProducts } from '../data/products';
+
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
@@ -19,7 +19,7 @@ interface Product {
   slug: string;
   description: string;
   price: number;
-  discountedPrice?: number; // <-- added
+  discountedPrice?: number; 
   images: string[];
   in_stock: boolean;
   category?: string;
@@ -86,19 +86,17 @@ export default function ProductsPage({
           slug: p.slug,
           description: p.description || '',
           price: p.price,
-          discountedPrice: p.discountedPrice, // <-- mapped
+          discountedPrice: p.discountedPrice, 
           images: p.images || [],
           in_stock: p.in_stock !== undefined ? p.in_stock : true,
-          category: (p.category || p.category_id?.name || p.category_id?.slug || '').toLowerCase(),
+          category: p.category_id?.slug || p.category || '',
           category_id: p.category_id,
         }));
       }
 
-      const combined = [...backendProducts, ...localProducts];
-      const deduped = Array.from(new Map(combined.map((p) => [p.slug, p])).values());
-      setAllProducts(deduped);
+      setAllProducts(backendProducts);
     } catch {
-      setAllProducts(localProducts);
+      setAllProducts([]);
     } finally {
       setLoading(false);
     }
@@ -199,7 +197,7 @@ export default function ProductsPage({
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://example.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://example.com/products" }
+      { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://www.sainamanpearls.com/products" }
     ]
   };
 
@@ -232,9 +230,9 @@ export default function ProductsPage({
       ← BACK TO HOME
     </button>
 
-    {/* Layout wrapper */}
+
     <div className="flex flex-col lg:flex-row gap-8">
-      {/* Sidebar */}
+      
       <div className="w-full lg:w-64 flex-shrink-0">
         <div className="bg-gray-900/60 backdrop-blur-md border border-gray-800/50 p-6 rounded-lg shadow-2xl sticky top-24">
           <h2 className="text-xl font-light tracking-wider text-gray-100 mb-6">CATEGORIES</h2>
