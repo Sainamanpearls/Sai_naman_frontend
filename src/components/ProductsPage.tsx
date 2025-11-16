@@ -196,7 +196,7 @@ export default function ProductsPage({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://example.com/" },
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.sainamanpearls.com/" },
       { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://www.sainamanpearls.com/products" }
     ]
   };

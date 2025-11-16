@@ -277,8 +277,8 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://yourdomain.com" },
-      { "@type": "ListItem", "position": 2, "name": "Customer Reviews", "item": "https://yourdomain.com/reviews" }
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.sainamanpearls.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Customer Reviews", "item": "https://www.sainamanpearls.com/reviews" }
     ]
   };
 
@@ -302,7 +302,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
         <meta property="og:title" content="Customer Reviews | YourBrand" />
         <meta property="og:description" content="See what our customers are saying about us." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/reviews" />
+        <meta property="og:url" content="https://www.sainamanpearls.com/reviews" />
         <script type="application/ld+json">{JSON.stringify(breadcrumbJSON)}</script>
         <script type="application/ld+json">{JSON.stringify(aggregateRatingJSON)}</script>
       </Helmet>

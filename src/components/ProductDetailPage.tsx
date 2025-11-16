@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ShoppingBag, Share2, Check, X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { localProducts } from '../data/products';
+
 
 interface Product {
   id: string;
@@ -56,25 +56,25 @@ export default function ProductDetailPage({
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [isFullscreen, fullscreenImage, product]);
 
-  const fetchProduct = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/api/products/${encodeURIComponent(productSlug)}`);
-      if (!res.ok) {
-        const local = localProducts.find((p) => p.slug === productSlug);
-        setProduct(local || null);
-        return;
-      }
-      const data = await res.json();
-      setProduct(data || localProducts.find((p) => p.slug === productSlug) || null);
-    } catch (err) {
-      console.error('Failed to load product', err);
-      const local = localProducts.find((p) => p.slug === productSlug);
-      setProduct(local || null);
-    } finally {
-      setLoading(false);
+ const fetchProduct = async () => {
+  setLoading(true);
+  try {
+    const res = await fetch(`${API_URL}/api/products/${encodeURIComponent(productSlug)}`);
+
+    if (!res.ok) {
+      setProduct(null);
+      return;
     }
-  };
+
+    const data = await res.json();
+    setProduct(data || null);
+  } catch (err) {
+    console.error('Failed to load product', err);
+    setProduct(null);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleAddToCart = () => {
     if (!product) return;
