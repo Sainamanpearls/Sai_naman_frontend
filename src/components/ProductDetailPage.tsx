@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ShoppingBag, Share2, Check, X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-
+import { useParams } from "react-router-dom";
 
 interface Product {
   id: string;
@@ -18,16 +18,18 @@ interface Product {
 }
 
 interface ProductDetailPageProps {
-  productSlug: string;
   onBack: () => void;
   onAddToCart: (product: Product) => void;
 }
 
 export default function ProductDetailPage({
-  productSlug,
   onBack,
   onAddToCart,
 }: ProductDetailPageProps) {
+
+  // ✅ Get slug from URL instead of props
+  const { slug } = useParams();
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -42,7 +44,7 @@ export default function ProductDetailPage({
   useEffect(() => {
     fetchProduct();
     window.scrollTo(0, 0);
-  }, [productSlug]);
+  }, [slug]); // ✅ changed productSlug → slug
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -56,25 +58,28 @@ export default function ProductDetailPage({
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [isFullscreen, fullscreenImage, product]);
 
- const fetchProduct = async () => {
-  setLoading(true);
-  try {
-    const res = await fetch(`${API_URL}/api/products/${encodeURIComponent(productSlug)}`);
+  // ✅ updated fetcher
+  const fetchProduct = async () => {
+    if (!slug) return;
 
-    if (!res.ok) {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/products/${encodeURIComponent(slug)}`);
+
+      if (!res.ok) {
+        setProduct(null);
+        return;
+      }
+
+      const data = await res.json();
+      setProduct(data || null);
+    } catch (err) {
+      console.error('Failed to load product', err);
       setProduct(null);
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    const data = await res.json();
-    setProduct(data || null);
-  } catch (err) {
-    console.error('Failed to load product', err);
-    setProduct(null);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -153,38 +158,38 @@ export default function ProductDetailPage({
 
   return (
     <>
-     <Helmet>
-  <title>{`${product.name} | Noir Store`}</title>
-  <meta name="description" content={product.description.slice(0, 150)} />
-  <meta property="og:title" content={product.name} />
-  <meta property="og:description" content={product.description} />
-  <meta property="og:image" content={product.images[0]} />
-  <meta property="og:url" content={productUrl} />
-  <meta name="twitter:card" content="summary_large_image" />
-  <script type="application/ld+json">
-    {JSON.stringify({
-      '@context': 'https://schema.org/',
-      '@type': 'Product',
-      name: product.name,
-      image: product.images,
-      description: product.description,
-      sku: product.id,
-      brand: { '@type': 'Brand', name: 'Noir Store' },
-      offers: {
-        '@type': 'Offer',
-        url: productUrl,
-        priceCurrency: 'INR',
-        price:
-          product.discountedPrice && product.discountedPrice < product.price
-            ? product.discountedPrice
-            : product.price,
-        availability: product.in_stock
-          ? 'https://schema.org/InStock'
-          : 'https://schema.org/OutOfStock',
-      },
-    })}
-  </script>
-</Helmet>
+      <Helmet>
+        <title>{`${product.name} | Noir Store`}</title>
+        <meta name="description" content={product.description.slice(0, 150)} />
+        <meta property="og:title" content={product.name} />
+        <meta property="og:description" content={product.description} />
+        <meta property="og:image" content={product.images[0]} />
+        <meta property="og:url" content={productUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org/',
+            '@type': 'Product',
+            name: product.name,
+            image: product.images,
+            description: product.description,
+            sku: product.id,
+            brand: { '@type': 'Brand', name: 'Noir Store' },
+            offers: {
+              '@type': 'Offer',
+              url: productUrl,
+              priceCurrency: 'INR',
+              price:
+                product.discountedPrice && product.discountedPrice < product.price
+                  ? product.discountedPrice
+                  : product.price,
+              availability: product.in_stock
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+            },
+          })}
+        </script>
+      </Helmet>
       <main className="min-h-screen bg-black px-4 py-12 pt-32">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-end mb-6">

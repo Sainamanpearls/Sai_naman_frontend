@@ -137,7 +137,7 @@ function App() {
   const [isAdminProductFormOpen, setIsAdminProductFormOpen] = useState(false);
   const [isAdminCategoryFormOpen, setIsAdminCategoryFormOpen] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
-  const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(null);
+  
   const [orderId, setOrderId] = useState<string | null>(null);
 
   
@@ -179,8 +179,8 @@ function App() {
 
   const handleViewProduct = useCallback(
     (slug: string) => {
-      setSelectedProductSlug(slug);
-      navigate("/product-detail");
+      
+      navigate(`/product/${slug}`);
     },
     [navigate]
   );
@@ -264,22 +264,18 @@ function App() {
 
           <Route path="/about" element={<About onReviewsClick={() => navigate("/reviews")} />} />
 
-          <Route
-            path="/product-detail"
-            element={
-              selectedProductSlug ? (
-                <Suspense fallback={<div className="p-8 text-center">Loading product...</div>}>
-                  <ProductDetailPage
-                    productSlug={selectedProductSlug}
-                    onBack={() => navigate("/")}
-                    onAddToCart={handleAddToCart}
-                  />
-                </Suspense>
-              ) : (
-                <div className="p-8 text-center">Product not found</div>
-              )
-            }
-          />
+         <Route
+  path="/product/:slug"
+  element={
+    <Suspense fallback={<div className="p-8 text-center">Loading product...</div>}>
+      <ProductDetailPage
+        //productSlug={selectedProductSlug!}
+        onBack={() => navigate("/products")}
+        onAddToCart={handleAddToCart}
+      />
+    </Suspense>
+  }
+/>
 
           <Route
             path="/checkout"
