@@ -21,7 +21,7 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const API_URL = import.meta.env.VITE_API_BASE_URL  || 'http://localhost:5001';
+  const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
   useEffect(() => {
     fetchReviews();
@@ -41,6 +41,12 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
     } finally {
       setLoading(false);
     }
+  };
+
+  // ✅ ADDED: Prevents long comment from stretching box
+  const truncate = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
   };
 
   const averageRating =
@@ -104,11 +110,10 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-5 h-5 ${
-                    i < Math.round(Number(averageRating))
-                      ? 'fill-yellow-400 text-yellow-400'
-                      : 'text-zinc-700'
-                  }`}
+                  className={`w-5 h-5 ${i < Math.round(Number(averageRating))
+                    ? 'fill-yellow-400 text-yellow-400'
+                    : 'text-zinc-700'
+                    }`}
                 />
               ))}
             </div>
@@ -135,7 +140,7 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
               {reviews.map((review, index) => (
                 <div
                   key={review._id}
-                  className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 min-w-[280px] sm:min-w-[320px] flex-shrink-0 shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 min-w-[180px] max-w-[250px] flex-shrink-0 shadow-lg hover:shadow-xl transition-shadow duration-300"
                   style={{ animation: `fade-in-up 0.5s ease-out ${index * 0.1}s both` }}
                 >
                   <div className="flex items-center gap-4 mb-4">
@@ -162,17 +167,17 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`w-4 h-4 ${
-                          i < review.rating
-                            ? 'fill-yellow-400 text-yellow-400'
-                            : 'text-zinc-700'
-                        }`}
+                        className={`w-4 h-4 ${i < review.rating
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-zinc-700'
+                          }`}
                       />
                     ))}
                   </div>
 
-                  <p className="text-zinc-300 text-sm leading-relaxed mb-4 line-clamp-5">
-                    {review.review_text}
+                  {/* ✅ Updated: Clean line wrapping + ellipsis + no stretching */}
+                  <p className="text-zinc-300 text-sm leading-relaxed mb-4 break-words">
+                    {truncate(review.review_text, 150)}
                   </p>
 
                   <p className="text-xs text-zinc-500">
