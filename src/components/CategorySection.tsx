@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async"; // 🧠 add this
+import { Helmet } from "react-helmet-async";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
 
@@ -41,7 +41,7 @@ export default function CategorySection() {
 
   return (
     <>
-     
+
       <Helmet>
         <title>
           Explore Pearl Jewelry Categories | Sai Naman Pearls - Free Delivery
@@ -56,7 +56,7 @@ export default function CategorySection() {
         />
         <meta name="author" content="Sai Naman Pearls" />
 
-        {/* ✅ Open Graph / Facebook */}
+
         <meta property="og:title" content="Explore Pearl Jewelry Categories" />
         <meta
           property="og:description"
@@ -69,7 +69,7 @@ export default function CategorySection() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.href} />
 
-        {/* ✅ Twitter Card */}
+
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -84,7 +84,7 @@ export default function CategorySection() {
           content="https://sainamanpearls.com/categories.jpg"
         />
 
-        {/* ✅ Canonical URL */}
+
         <link rel="canonical" href={window.location.href} />
       </Helmet>
 
@@ -104,7 +104,7 @@ export default function CategorySection() {
               >
                 <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-gray-700 shadow-lg group-hover:border-yellow-500 transition-colors">
                   <img
-                    src={category.image_url || "/placeholder.jpg"}
+                    src={`${category.image_url}?f_auto&q_auto&c_fill,w_300,h_300`}
                     alt={category.name}
                     loading="lazy"
                     className="w-full h-full object-cover"

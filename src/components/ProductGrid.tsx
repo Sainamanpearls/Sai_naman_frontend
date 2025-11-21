@@ -65,7 +65,7 @@ export default function ProductGrid({ onAddToCart, onViewProduct, newProduct }: 
         }));
       }
 
-        setProducts(backendProducts.filter((p) => p.featured));
+      setProducts(backendProducts.filter((p) => p.featured));
       setProducts(backendProducts);
     } catch (err) {
       setProducts([]);
@@ -150,10 +150,17 @@ export default function ProductGrid({ onAddToCart, onViewProduct, newProduct }: 
             >
               <div className="relative aspect-square overflow-hidden cursor-pointer" onClick={() => onViewProduct(product.slug)}>
                 <img
-                  src={product.images[0] || ''}
+                  src={
+                    product.images[0]
+                      ? product.images[0].replace(
+                        "/upload/",
+                        "/upload/f_auto,q_auto,w_600,c_fill/"
+                      )
+                      : ""
+                  }
                   alt={product.name}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <button
@@ -168,7 +175,7 @@ export default function ProductGrid({ onAddToCart, onViewProduct, newProduct }: 
               <div className="p-4 sm:p-6 cursor-pointer" onClick={() => onViewProduct(product.slug)}>
                 <h3 className="text-base sm:text-xl font-light tracking-wide text-white mb-1 sm:mb-2">{product.name}</h3>
                 <p className="text-xs sm:text-sm text-zinc-500 mb-2 line-clamp-2">{product.description}</p>
-                
+
                 {/* Price + Discount */}
                 <div className="flex flex-col">
                   {product.discountedPrice && product.discountedPrice < product.price ? (
