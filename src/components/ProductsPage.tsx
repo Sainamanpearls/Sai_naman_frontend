@@ -211,7 +211,7 @@ export default function ProductsPage({
   </Helmet>
 
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    {/* Title & description */}
+  
     <div className="text-center mb-12 animate-fade-in">
       <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-widest text-gray-100 mb-4 drop-shadow-lg">
         {getCategoryDisplayName()?.toUpperCase() ?? ""}
@@ -223,6 +223,26 @@ export default function ProductsPage({
       </p>
     </div>
 
+ 
+    <div className="lg:hidden ">
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => handleCategoryClick(category.slug || category.id!)}
+            className={`whitespace-nowrap px-4 py-2 rounded-full border text-sm tracking-wide transition-all ${
+              selectedCategory === category.slug || selectedCategory === category.id
+                ? 'bg-gray-200 text-black border-gray-300'
+                : 'bg-gray-900/60 text-gray-300 border-gray-800 hover:bg-gray-800'
+            }`}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+    </div>
+    
+
     <button
       onClick={onBack}
       className="text-gray-500 hover:text-gray-300 transition-colors mb-6 tracking-wider font-light"
@@ -233,7 +253,8 @@ export default function ProductsPage({
 
     <div className="flex flex-col lg:flex-row gap-8">
       
-      <div className="w-full lg:w-64 flex-shrink-0">
+      
+      <div className="w-full lg:w-64 flex-shrink-0 hidden lg:block">
         <div className="bg-gray-900/60 backdrop-blur-md border border-gray-800/50 p-6 rounded-lg shadow-2xl sticky top-24">
           <h2 className="text-xl font-light tracking-wider text-gray-100 mb-6">CATEGORIES</h2>
           <div className="space-y-2">
@@ -249,6 +270,7 @@ export default function ProductsPage({
                 >
                   {category.name}
                 </button>
+
                 {isAdmin && category.id !== 'all' && (
                   <button
                     onClick={(e) => { e.stopPropagation(); confirmDelete('category', category.id!, category.name || ''); }}
@@ -266,10 +288,9 @@ export default function ProductsPage({
           </div>
         </div>
       </div>
-
-      {/* Product Grid */}
+     
       <div className="flex-1">
-        {/* Search & sort */}
+       
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <p className="text-gray-400 font-light tracking-wide">
             {products.length} {products.length === 1 ? 'product' : 'products'}
@@ -383,7 +404,7 @@ export default function ProductsPage({
     </div>
   </div>
 
-  {/* Delete Confirmation */}
+ 
   {deleteConfirm && (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-gray-100 p-4 rounded-lg shadow-lg flex items-center gap-4 z-50">
       <span>Are you sure you want to delete <strong>{deleteConfirm.name}</strong>?</span>
