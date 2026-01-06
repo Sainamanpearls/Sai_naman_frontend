@@ -321,7 +321,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
                         )}
                         <div>
                           <p className="text-white font-medium group-hover:text-blue-400 transition-colors">{product.name}</p>
-                          <p className="text-zinc-500 text-sm">${product.price}</p>
+                          <p className="text-zinc-500 text-sm">₹{product.price}</p>
                         </div>
                       </div>
                       <Edit className="w-4 h-4 text-zinc-600 group-hover:text-white" />

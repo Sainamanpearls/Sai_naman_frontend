@@ -274,32 +274,23 @@ export default function UserOrdersPage({ onBack }: UserOrdersPageProps) {
                 <h4 className="text-white font-light tracking-wider">ORDER ITEMS</h4>
               </div>
               <div className="space-y-3">
-                {orderItems[order._id].map((item) => (
-                  <div
-                    key={item._id}
-                    className="flex justify-between items-center bg-zinc-950 p-4 rounded border border-zinc-800"
-                  >
-                    <div className="flex-1">
-                      <p className="text-white font-medium mb-1">{item.product_name}</p>
-                      <p className="text-zinc-500 text-sm">
-                        Quantity: {item.quantity} × ₹
-                        {(item.discount_price && item.discount_price > 0
-                          ? item.discount_price
-                          : item.product_price
-                        ).toLocaleString('en-US')}
-                      </p>
-                      <p className="text-zinc-500 text-sm">
-                        Color: {item.color}
-                      </p>
-                      <p className="text-zinc-500 text-sm">
-                        Size: {item.size}
-                      </p>
-                    </div>
-                    <p className="text-white text-lg font-light">
-                      ₹{item.total.toLocaleString('en-US')}
-                    </p>
+               
+            {orderItems[order._id].map(item => {
+              const unitPrice = item.discount_price && item.discount_price > 0 ? item.discount_price : item.product_price;
+              const lineTotal = unitPrice * (item.quantity ?? 1);
+
+              return (
+                <div key={item._id} className="flex justify-between items-center bg-zinc-950 p-4 rounded border border-zinc-800">
+                  <div className="flex-1">
+                    <p className="text-white font-medium mb-1">{item.product_name}</p>
+                    <p className="text-zinc-500 text-sm">Quantity: {item.quantity} × ₹{unitPrice.toLocaleString('en-US')}</p>
+                    {item.color && <p className="text-zinc-500 text-sm">Color: {item.color}</p>}
+                    {item.size && <p className="text-zinc-500 text-sm">Size: {item.size}</p>}
                   </div>
-                ))}
+                  <p className="text-white text-lg font-light">₹{lineTotal.toLocaleString('en-IN')}</p>
+                </div>
+              );
+            })}
               </div>
             </div>
           </div>
