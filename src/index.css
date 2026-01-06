@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-black text-white antialiased;
+  }
+}
+
+/* Hero / marquee animations */
+@keyframes scroll-rtl {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-scroll-rtl {
+  display: inline-block;
+  animation: scroll-rtl 18s linear infinite;
+  will-change: transform;
+}
+
+@layer utilities {
+  /* Fade and slide animations */
+  .animate-fade-in {
+    animation: fade-in 1.2s ease-out both;
+    will-change: opacity, transform;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 1s ease-out 0.3s both;
+    will-change: opacity, transform;
+  }
+
+  .animate-slide-up-delay {
+    animation: slide-up 1s ease-out 0.6s both;
+    will-change: opacity, transform;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in-left {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Radial gradient background helper */
+  .bg-gradient-radial {
+    background: radial-gradient(circle at center, var(--tw-gradient-stops));
+  }
+
+  /* Animation delays */
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+
+  /* Background pulse animation */
+  @keyframes bgPulse {
+    0% {
+      background: radial-gradient(circle, #7c7c7c, transparent 60%);
+    }
+    50% {
+      background: radial-gradient(circle, #ffffff, transparent 60%);
+    }
+    100% {
+      background: radial-gradient(circle, #7c7c7c, transparent 60%);
+    }
+  }
+
+  .animate-bg-pulse {
+    animation: bgPulse 5s ease-in-out infinite alternate;
+    will-change: background;
+  }
+}
